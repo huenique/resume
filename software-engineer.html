@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hju Kneyck Flores – Senior Software Engineer Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Theme tokens: edit these to restyle the whole document ---------- */
+  :root {
+    --font-display: "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+    --font-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Segoe UI", Helvetica, Arial, sans-serif;
+    --ink: #1a1a18;        /* name, section headings, company names, rules */
+    --muted: #4a4a46;      /* body copy, roles, dates, contact line */
+    --paper: #ffffff;
+    --page-w: 210mm;       /* A4 */
+    --page-h: 297mm;
+    --page-margin: 0.4in;  /* printer margin; content padding is added inside it */
+    --pad-top: 40px;
+    --pad-right: 38px;
+    --pad-bottom: 40px;
+    --pad-left: 40px;
+  }
+
+  * { box-sizing: border-box; }
+  .page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  html { background: #e9e9e6; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 10.5pt;
+    line-height: 1.45;
+    color: var(--muted);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .page {
+    width: var(--page-w);
+    min-height: var(--page-h);
+    margin: 24px auto;
+    padding: calc(var(--page-margin) + var(--pad-top)) calc(var(--page-margin) + var(--pad-right))
+             calc(var(--page-margin) + var(--pad-bottom)) calc(var(--page-margin) + var(--pad-left));
+    background: var(--paper);
+    box-shadow: 0 2px 12px rgba(0,0,0,.12);
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Header ---------- */
+  .header { margin-bottom: 14px; }
+  .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: -6px 0 6px;    /* optical nudge done with margins, not position:relative, so the name stays first in the PDF text layer for ATS parsers */
+  }
+  .tagline {
+    font-size: 12.5pt;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    margin: 0 0 5px;
+  }
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+    font-size: 11pt;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* ---------- Sections ---------- */
+  .section { margin-top: 14px; }
+  .section-title {
+    font-size: 10.5pt;
+    font-weight: 500;
+    letter-spacing: 0.095em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 10px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .skills {
+    font-size: 11pt;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .skill-grid { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin: 0; line-height: 1.4; }
+  .skill-grid dt { font-weight: 600; color: var(--ink); }
+  .skill-grid dd { margin: 0; }
+
+  /* ---------- Entries (experience / education) ---------- */
+  .entry { margin-bottom: 10px; break-inside: avoid; }
+  .entry:last-child { margin-bottom: 0; }
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    line-height: 1.25;
+  }
+  .entry-org {
+    font-size: 12pt;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+  }
+  .entry-dates {
+    font-size: 11pt;
+    white-space: nowrap;
+  }
+  .entry-role {
+    font-style: italic;
+    font-size: 11pt;
+    margin: 0 0 3px;
+  }
+  .bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1.35;
+  }
+  .bullets li {
+    padding-left: 18px;
+    margin-bottom: 2px;
+  }
+  .bullets li:last-child { margin-bottom: 0; }
+
+  /* Keep an entry's heading and role with at least its first bullet; never split a bullet across pages */
+  .section-title, .entry-head, .entry-role { break-after: avoid; }
+  .bullets li { break-inside: avoid; }
+  .bullets li::before {
+    /* A text glyph, not a background box: browsers drop background graphics when printing by default */
+    content: "•";
+    display: inline-block;   /* in-flow, not absolute: positioned boxes print after the text, which scrambles the PDF text layer for ATS parsers */
+    width: 18px;
+    margin-left: -18px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  /* ---------- Print ---------- */
+  @page { size: A4; margin: 0.4in; }
+  @media print {
+    html { background: none; }
+    .page {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: var(--pad-top) var(--pad-right) 0 var(--pad-left); /* no bottom padding: the @page margin already provides it */
+      box-shadow: none;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- ======================= HEADER ======================= -->
+  <header class="header">
+    <h1 class="name">Hju Kneyck Flores</h1>
+    <p class="tagline">Senior Software Engineer — Backend, Data &amp; Cloud-Native Systems</p>
+    <ul class="contact">
+      <li>Philippines (UTC+8) · Remote</li>
+      <li><a href="mailto:hjucode@gmail.com">hjucode@gmail.com</a></li>
+      <li><a href="https://github.com/huenique">github.com/huenique</a></li>
+    </ul>
+  </header>
+
+  <!-- ======================= SKILLS ======================= -->
+  <section class="section">
+    <h2 class="section-title">Technical Skills</h2>
+    <dl class="skill-grid">
+      <dt>Languages</dt><dd>Python, TypeScript, JavaScript, Rust, SQL</dd>
+      <dt>Frameworks</dt><dd>FastAPI, Litestar, Next.js, React, Streamlit</dd>
+      <dt>Databases</dt><dd>PostgreSQL, pgvector, Azure Cosmos DB</dd>
+      <dt>Cloud &amp; DevOps</dt><dd>Azure, Docker, GitHub Actions</dd>
+      <dt>Testing</dt><dd>pytest</dd>
+      <dt>AI tools</dt><dd>Claude Code, Anthropic API, OpenAI API, Gemini API, MCP</dd>
+    </dl>
+  </section>
+
+  <!-- ======================= EXPERIENCE ======================= -->
+  <section class="section">
+    <h2 class="section-title">Experience</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">Independent Contractor</h3>
+        <span class="entry-dates">Jan 2025 – Present</span>
+      </div>
+      <p class="entry-role">Solutions Architect &amp; AI Systems Engineer</p>
+      <ul class="bullets">
+        <li>Client teams heard about new competitor TV commercials too late to respond. I built a service that catches each new spot within 10 minutes, writes a teardown of it, and sends it to the right client team. Its data later fed two industry reports covering 6,000+ creatives for under $15 in AI spend.</li>
+        <li>Strategy directors lost hours after every client call writing recaps and chasing tasks. I built a tool that turns the meeting transcript into a recap, a follow-up email, and assigned tasks. It files a task only when the quote behind it appears word for word in the transcript, so nothing invented gets assigned.</li>
+        <li>AI output is only useful if people can trust it, so I measure it like any other system. When my own benchmark turned out to measure the wrong thing, I re-measured and reported the lower numbers. When a score looked wrong, I traced it to a counting bug, fixed it, and added a test so it can&rsquo;t come back.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">Independent Contractor</h3>
+        <span class="entry-dates">Sep 2020 – Present</span>
+      </div>
+      <p class="entry-role">Software Engineer, Trading &amp; Data Systems</p>
+      <ul class="bullets">
+        <li>Price and funding gaps between exchanges only pay if both sides of the trade fill together. I designed and run a system, live on 16 exchanges, that enters both sides at once, sizes each trade to the depth actually on the book, and records every fill so profit can be traced. 4,000+ automated tests protect it.</li>
+        <li>Opportunities were disappearing before the scanner finished a pass. I cut a full scan of 528 markets from 79 seconds to 1.3 by batching requests, so the system acts while the gap still exists.</li>
+        <li>In live trading, one bad price or unit bug can lose real money in seconds. After each incident, such as an impossible quoted price or a kill switch that could never fire because it measured losses in the wrong units, I fixed the cause, added a guard that refuses similar bad data, and wrote a test that fails on the old code.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">Tereo.AI</h3>
+        <span class="entry-dates">Mar 2025 – Dec 2025</span>
+      </div>
+      <p class="entry-role">ETL Specialist</p>
+      <ul class="bullets">
+        <li>An AI brand protection startup needed a steady supply of web data to spot threats to its customers&rsquo; brands. I built the scraping and ingestion pipelines that feed its detection workflows.</li>
+        <li>Worked directly with the founding team to turn product ideas into production systems they could iterate on quickly.</li>
+        <li>Kept the data flowing as sources and priorities changed, so the platform could adapt without rebuilding its pipelines.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">ULTiM8 Outsource Solutions Corp.</h3>
+        <span class="entry-dates">Mar 2025 – Dec 2025</span>
+      </div>
+      <p class="entry-role">Independent Software Developer</p>
+      <ul class="bullets">
+        <li>Delivered production-ready systems for client projects within fixed scopes and timelines.</li>
+        <li>Worked with client technical and product leads so each delivery met the business goal, not just the spec.</li>
+        <li>Handled confidential client work under strict confidentiality requirements.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">KodeCraft OPC</h3>
+        <span class="entry-dates">May 2023 – Dec 2024</span>
+      </div>
+      <p class="entry-role">Products &amp; Systems Engineer</p>
+      <ul class="bullets">
+        <li>Traders were acting on data up to 30 seconds old. I launched a derivatives trading dashboard with real-time data ingestion that cut end-to-end execution latency to under 10ms.</li>
+        <li>Market and portfolio data was scattered across sources. I built aggregation, visualization, and portfolio tools that put it in one view.</li>
+        <li>Smart contracts hold real funds and can&rsquo;t be patched after launch. I developed and reviewed contracts and dApp integrations to catch problems before deployment.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">Halcyon Agile</h3>
+        <span class="entry-dates">Jan 2023 – Apr 2023</span>
+      </div>
+      <p class="entry-role">Independent Software Developer</p>
+      <ul class="bullets">
+        <li>A client needed an Early Grade Learning (EGL) website that young learners could actually use. I led its development from requirements and design through testing.</li>
+        <li>Added data-driven features that improved the site&rsquo;s accessibility and engagement.</li>
+        <li>Starting each new feature took too long, so I wrote shared boilerplate that cut setup time.</li>
+      </ul>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">SurPath Hub</h3>
+        <span class="entry-dates">Jun 2021 – Jan 2023</span>
+      </div>
+      <p class="entry-role">Operations &amp; Project Manager</p>
+      <ul class="bullets">
+        <li>Routine processes were eating staff time. I built internal tools that cut completion time by over 30%.</li>
+        <li>Our open-source projects had few outside contributors. I managed them and doubled contributor engagement.</li>
+        <li>Client releases were slow. I introduced agile practices that shortened iteration cycles.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ======================= EDUCATION ======================= -->
+  <section class="section">
+    <h2 class="section-title">Education</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3 class="entry-org">Manuel S. Enverga University Foundation</h3>
+        <span class="entry-dates">Jul 2019 – May 2023</span>
+      </div>
+      <p class="entry-role">Bachelor of Science, Information Technology</p>
+    </article>
+  </section>
+
+</main>
+</body>
+</html>
