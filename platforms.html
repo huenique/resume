@@ -31,8 +31,8 @@
   body {
     margin: 0;
     font-family: var(--font-body);
-    font-size: 11pt;
-    line-height: 1.5;
+    font-size: 10.5pt;
+    line-height: 1.45;
     color: var(--muted);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -51,7 +51,7 @@
   a { color: inherit; text-decoration: none; }
 
   /* ---------- Header ---------- */
-  .header { margin-bottom: 22px; }
+  .header { margin-bottom: 14px; }
   .name {
     font-family: var(--font-display);
     font-weight: 700;
@@ -59,9 +59,7 @@
     line-height: 1;
     letter-spacing: -0.025em;
     color: var(--ink);
-    margin: 0;
-    position: relative;
-    top: -6px;             /* optical nudge; keeps the rest of the flow unchanged */
+    margin: -6px 0 6px;    /* optical nudge done with margins, not position:relative, so the name stays first in the PDF text layer for ATS parsers */
   }
   .tagline {
     font-size: 12.5pt;
@@ -98,8 +96,12 @@
     margin: 0;
   }
 
+  .skill-grid { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin: 0; line-height: 1.4; }
+  .skill-grid dt { font-weight: 600; color: var(--ink); }
+  .skill-grid dd { margin: 0; }
+
   /* ---------- Entries (experience / education) ---------- */
-  .entry { margin-bottom: 10px; }
+  .entry { margin-bottom: 10px; break-inside: avoid; }
   .entry:last-child { margin-bottom: 0; }
   .entry-head {
     display: flex;
@@ -130,22 +132,20 @@
     line-height: 1.35;
   }
   .bullets li {
-    position: relative;
     padding-left: 18px;
     margin-bottom: 2px;
   }
   .bullets li:last-child { margin-bottom: 0; }
 
   /* Keep an entry's heading and role with at least its first bullet; never split a bullet across pages */
-  .entry-head, .entry-role { break-after: avoid; }
+  .section-title, .entry-head, .entry-role { break-after: avoid; }
   .bullets li { break-inside: avoid; }
   .bullets li::before {
     /* A text glyph, not a background box: browsers drop background graphics when printing by default */
     content: "•";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 10px;
+    display: inline-block;   /* in-flow, not absolute: positioned boxes print after the text, which scrambles the PDF text layer for ATS parsers */
+    width: 18px;
+    margin-left: -18px;
     text-align: center;
     color: var(--muted);
   }
@@ -172,7 +172,7 @@
     <h1 class="name">Hju Kneyck Flores</h1>
     <p class="tagline">Software Engineer — Crypto Trading Systems &amp; On-Chain Platforms</p>
     <ul class="contact">
-      <li>Philippines</li>
+      <li>Philippines (UTC+8) · Remote</li>
       <li><a href="mailto:hjucode@gmail.com">hjucode@gmail.com</a></li>
       <li><a href="https://github.com/huenique">github.com/huenique</a></li>
     </ul>
@@ -180,8 +180,14 @@
 
   <!-- ======================= SKILLS ======================= -->
   <section class="section">
-    <h2 class="section-title">Skills</h2>
-    <p class="skills">Python, Rust, TypeScript, SQL · Smart-contract and on-chain integration (EVM, Solana) · Exchange and DEX connectivity · Full-stack product engineering · Low-latency and real-time systems · Strategy validation, backtesting and simulation · API and data pipeline design · LLM integration</p>
+    <h2 class="section-title">Technical Skills</h2>
+    <dl class="skill-grid">
+      <dt>Languages</dt><dd>Python, Rust, TypeScript, Solidity, SQL</dd>
+      <dt>Chains</dt><dd>Ethereum and EVM chains, Polygon, Solana</dd>
+      <dt>Libraries &amp; frameworks</dt><dd>CCXT, FastAPI, Litestar, Next.js, React</dd>
+      <dt>Databases</dt><dd>PostgreSQL</dd>
+      <dt>AI tools</dt><dd>Claude Code, Anthropic API, MCP</dd>
+    </dl>
   </section>
 
   <!-- ======================= EXPERIENCE ======================= -->
@@ -195,15 +201,11 @@
       </div>
       <p class="entry-role">Systems &amp; Product Engineer, Crypto Trading Platforms</p>
       <ul class="bullets">
-        <li>Architected a multi-strategy crypto trading desk running delta-neutral funding-rate arbitrage across 12 centralized and decentralized perpetual venues, with atomic two-leg entry, fail-closed slippage checks, liquidity-paced unwind, and an append-only ledger behind a Python API and React UI. Live on 9 venues; scanner latency cut from 79s to 1.3s.</li>
-        <li>Operated a Polymarket prediction-market desk on Polygon: signed CLOB orders through a smart-contract proxy wallet, on-chain settlement reconciliation, and a settlement kill switch, run as a two-region fleet across 7 markets (119 trades, 96.6% win rate). Verified the Conditional Tokens split/merge mechanics behind the complete-set price bound and built an atomic-entry strategy on them that removed the one-sided loss category in backtest.</li>
-        <li>Engineered two autonomous strategy engines for Gate.io, an earn-carry bot pairing yield products with short-perp funding (780 coins screened, TWAP execution, unattended 8-hour cycles) and a moving-average-anchored grid market maker with post-only ladders and inventory caps, both shipped dry-run by default with kill switches, API endpoints, and a monitoring UI.</li>
-        <li>Built a precious-metals buy-and-hedge platform for a physical gold operation: a Next.js and Postgres app with live exchange mark and funding feeds, a Pyth on-chain USD/PHP oracle with confidence bands, per-karat melt pricing, hedge sizing against exchange lot filters, and batch P&amp;L, plus an MCP agent interface for Claude Desktop verified end-to-end against the desk&rsquo;s own numbers. Delivered in one week.</li>
-        <li>Shipped the investor-facing surface for the strategies business: a landing site with an interactive payoff explorer and position-size calculator across 30+ strategies, accessibility-audited and deployed to a VPS, plus a token-gated investor dashboard.</li>
-        <li>Designed LOBSIM, a synthetic limit-order-book simulator with a price-time matching engine, interacting agents that produce emergent spreads and depth, a WebSocket L1/L2 feed, and latency injection, for testing execution logic and connectivity without touching a live venue.</li>
+        <li>Funding rates differ across centralized and decentralized perpetual exchanges, but the gap only pays if both legs fill together. I built and run a delta-neutral arbitrage desk, live on 9 venues, that enters both legs at once, sizes each trade to the depth on the book, and records every fill in an append-only ledger.</li>
+        <li>Prediction-market trades settle on-chain, so every fill and payout has to match the chain. I ran a Polymarket desk on Polygon that signs orders through a smart-contract proxy wallet, reconciles each settlement on-chain, and stops itself on losing settlements.</li>
+        <li>A physical gold buyer needed each purchase hedged before metal prices moved. In one week I built a platform that prices pieces from live exchange feeds and an on-chain FX oracle, sizes the hedge, and reports P&amp;L per sale, operated by talking to Claude with a preview before every write.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">KodeCraft OPC</h3>
@@ -211,25 +213,23 @@
       </div>
       <p class="entry-role">Products &amp; Systems Engineer</p>
       <ul class="bullets">
-        <li>Launched a high-performance crypto derivatives trading dashboard with automated real-time data ingestion, reducing end-to-end execution latency from ~30s to under 10ms.</li>
-        <li>Engineered a robust risk and execution framework using live market feeds and advanced analytics to improve fill rates and minimize slippage.</li>
-        <li>Maintained and optimized market making and liquidity-provisioning infrastructure handling large volumes of real-time cryptocurrency market data.</li>
+        <li>Traders were acting on data up to 30 seconds old. I launched a derivatives trading dashboard with real-time data ingestion that cut end-to-end execution latency to under 10ms.</li>
+        <li>Market and portfolio data was scattered across sources. I built aggregation, visualization, and portfolio tools that put it in one view.</li>
+        <li>Smart contracts hold real funds and can&rsquo;t be patched after launch. I developed and reviewed contracts and dApp integrations to catch problems before deployment.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Independent Contractor</h3>
         <span class="entry-dates">Jan 2025 – Present</span>
       </div>
-      <p class="entry-role">AI Systems Engineer &amp; Agentic Automation Architect</p>
+      <p class="entry-role">AI Systems Engineer</p>
       <ul class="bullets">
-        <li>Delivered a web traffic estimator that reconciles a trained model with conformal intervals, a calibrated rank curve, and LLM research agents through a reviewer loop. Validated on real measured traffic at 76% within 2× with no systematic bias, matching a commercial panel provider on accuracy at a fraction of the cost.</li>
-        <li>Implemented a 14-agent Gemini video analysis platform that converts raw video into schema-locked JSON behind a validation gate and an async job API. Benchmarked it against a self-hosted vision model and kept Gemini at 3–5× lower cost, 2× faster, and 10/10 reliability.</li>
-        <li>Shipped a production competitor-commercial alert service on Azure Functions and Cosmos DB that detects new TV spots within 10 minutes, then mined its 746k-creative database into exposure-weighted industry trend reports covering 6,000+ creatives for under $15 in AI spend.</li>
+        <li>Estimating a website&rsquo;s traffic normally means paying for licensed panel data. I built an estimator that combines a trained model, a rank curve, and AI research agents. On real measured traffic it lands within 2× 76% of the time with no systematic bias, matching a commercial provider on accuracy at a fraction of the cost.</li>
+        <li>Client teams heard about new competitor TV commercials too late to respond. I built a service that catches each new spot within 10 minutes, writes a teardown of it, and sends it to the right client team. Its data later fed two industry reports covering 6,000+ creatives for under $15 in AI spend.</li>
+        <li>Analysts needed structured data from raw video, and a self-hosted model looked cheaper. I built a 14-agent video analysis pipeline and benchmarked both options: the hosted model came out 3–5× cheaper, 2× faster, and reliable on 10 of 10 runs, so the choice was made on data.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">ULTiM8 Outsource Solutions Corp.</h3>
@@ -237,12 +237,11 @@
       </div>
       <p class="entry-role">Independent Software Developer</p>
       <ul class="bullets">
-        <li>Served as technology delivery partner on client projects, ensuring production-ready systems within scoped engagements.</li>
-        <li>Executed product-oriented engineering, translating requirements into reliable, scalable solutions.</li>
-        <li>Collaborated with client technical and product leads to align delivery with business goals and timelines.</li>
+        <li>Delivered production-ready systems for client projects within fixed scopes and timelines.</li>
+        <li>Worked with client technical and product leads so each delivery met the business goal, not just the spec.</li>
+        <li>Handled confidential client work under strict confidentiality requirements.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Tereo.AI</h3>
@@ -250,12 +249,11 @@
       </div>
       <p class="entry-role">ETL Specialist</p>
       <ul class="bullets">
-        <li>Partnered with founders to deliver core product and platform initiatives for AI brand protection.</li>
-        <li>Constructed scalable web scraping pipelines powering data ingestion and intelligence workflows.</li>
-        <li>Translated product vision into reliable, production-grade systems enabling rapid iteration.</li>
+        <li>An AI brand protection startup needed a steady supply of web data to spot threats to its customers&rsquo; brands. I built the scraping and ingestion pipelines that feed its detection workflows.</li>
+        <li>Worked directly with the founding team to turn product ideas into production systems they could iterate on quickly.</li>
+        <li>Kept the data flowing as sources and priorities changed, so the platform could adapt without rebuilding its pipelines.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Halcyon Agile</h3>
@@ -263,12 +261,11 @@
       </div>
       <p class="entry-role">Independent Software Developer</p>
       <ul class="bullets">
-        <li>Led the development of an Early Grade Learning (EGL) website, implementing data-driven features that enhanced the platform&rsquo;s accessibility and user engagement.</li>
-        <li>Increased operational productivity by promoting the adoption of modern tech stacks, resulting in faster development cycles and improved application performance.</li>
-        <li>Developed custom boilerplate code for projects, reducing the setup time for new features and allowing the team to quickly deliver solutions to clients.</li>
+        <li>A client needed an Early Grade Learning (EGL) website that young learners could actually use. I led its development from requirements and design through testing.</li>
+        <li>Added data-driven features that improved the site&rsquo;s accessibility and engagement.</li>
+        <li>Starting each new feature took too long, so I wrote shared boilerplate that cut setup time.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">SurPath Hub</h3>
@@ -276,9 +273,9 @@
       </div>
       <p class="entry-role">Operations &amp; Project Manager</p>
       <ul class="bullets">
-        <li>Managed open-source projects, driving external contributions and enhancing community visibility, which resulted in a 100% increase in contributor engagement.</li>
-        <li>Created operational tools that improved workflow efficiency and reduced process completion time by over 30%.</li>
-        <li>Implemented agile project management practices, accelerating deliverables and increasing client satisfaction through faster iteration and product releases.</li>
+        <li>Routine processes were eating staff time. I built internal tools that cut completion time by over 30%.</li>
+        <li>Our open-source projects had few outside contributors. I managed them and doubled contributor engagement.</li>
+        <li>Client releases were slow. I introduced agile practices that shortened iteration cycles.</li>
       </ul>
     </article>
   </section>
@@ -292,7 +289,7 @@
         <h3 class="entry-org">Manuel S. Enverga University Foundation</h3>
         <span class="entry-dates">Jul 2019 – May 2023</span>
       </div>
-      <p class="entry-role">Bachelor&rsquo;s of Science, Information Technology</p>
+      <p class="entry-role">Bachelor of Science, Information Technology</p>
     </article>
   </section>
 

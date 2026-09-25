@@ -31,8 +31,8 @@
   body {
     margin: 0;
     font-family: var(--font-body);
-    font-size: 11pt;
-    line-height: 1.5;
+    font-size: 10.5pt;
+    line-height: 1.45;
     color: var(--muted);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -51,7 +51,7 @@
   a { color: inherit; text-decoration: none; }
 
   /* ---------- Header ---------- */
-  .header { margin-bottom: 22px; }
+  .header { margin-bottom: 14px; }
   .name {
     font-family: var(--font-display);
     font-weight: 700;
@@ -59,9 +59,7 @@
     line-height: 1;
     letter-spacing: -0.025em;
     color: var(--ink);
-    margin: 0;
-    position: relative;
-    top: -6px;             /* optical nudge; keeps the rest of the flow unchanged */
+    margin: -6px 0 6px;    /* optical nudge done with margins, not position:relative, so the name stays first in the PDF text layer for ATS parsers */
   }
   .tagline {
     font-size: 12.5pt;
@@ -98,8 +96,12 @@
     margin: 0;
   }
 
+  .skill-grid { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin: 0; line-height: 1.4; }
+  .skill-grid dt { font-weight: 600; color: var(--ink); }
+  .skill-grid dd { margin: 0; }
+
   /* ---------- Entries (experience / education) ---------- */
-  .entry { margin-bottom: 10px; }
+  .entry { margin-bottom: 10px; break-inside: avoid; }
   .entry:last-child { margin-bottom: 0; }
   .entry-head {
     display: flex;
@@ -130,22 +132,20 @@
     line-height: 1.35;
   }
   .bullets li {
-    position: relative;
     padding-left: 18px;
     margin-bottom: 2px;
   }
   .bullets li:last-child { margin-bottom: 0; }
 
   /* Keep an entry's heading and role with at least its first bullet; never split a bullet across pages */
-  .entry-head, .entry-role { break-after: avoid; }
+  .section-title, .entry-head, .entry-role { break-after: avoid; }
   .bullets li { break-inside: avoid; }
   .bullets li::before {
     /* A text glyph, not a background box: browsers drop background graphics when printing by default */
     content: "•";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 10px;
+    display: inline-block;   /* in-flow, not absolute: positioned boxes print after the text, which scrambles the PDF text layer for ATS parsers */
+    width: 18px;
+    margin-left: -18px;
     text-align: center;
     color: var(--muted);
   }
@@ -172,7 +172,7 @@
     <h1 class="name">Hju Kneyck Flores</h1>
     <p class="tagline">SDET — AI-Powered Quality Engineering &amp; Crypto Trading Systems</p>
     <ul class="contact">
-      <li>Philippines</li>
+      <li>Philippines (UTC+8) · Remote</li>
       <li><a href="mailto:hjucode@gmail.com">hjucode@gmail.com</a></li>
       <li><a href="https://github.com/huenique">github.com/huenique</a></li>
     </ul>
@@ -180,8 +180,14 @@
 
   <!-- ======================= SKILLS ======================= -->
   <section class="section">
-    <h2 class="section-title">Skills</h2>
-    <p class="skills">Python, TypeScript, Rust, SQL · Pytest, Playwright, Vitest · Claude, GPT and Gemini agents, MCP · AI-assisted test generation and defect analysis · API and end-to-end test automation · LLM evaluation harnesses · Exchange API and high-concurrency systems testing · Simulators and deterministic replay</p>
+    <h2 class="section-title">Technical Skills</h2>
+    <dl class="skill-grid">
+      <dt>Languages</dt><dd>Python, TypeScript, Rust, SQL</dd>
+      <dt>Testing</dt><dd>pytest, pytest-asyncio, Playwright, Vitest, Testing Library, deepeval</dd>
+      <dt>Observability</dt><dd>Phoenix</dd>
+      <dt>Frameworks</dt><dd>FastAPI, Litestar, React</dd>
+      <dt>AI tools</dt><dd>Claude Code, Anthropic API, OpenAI API, Gemini API, MCP</dd>
+    </dl>
   </section>
 
   <!-- ======================= EXPERIENCE ======================= -->
@@ -195,13 +201,11 @@
       </div>
       <p class="entry-role">AI Systems Engineer, Evaluation &amp; Quality Tooling</p>
       <ul class="bullets">
-        <li>Built an AI website evaluator that drives Playwright and Claude vision agents through a site and scores it against 254 criteria across 13 review areas, with gap analysis against human evaluator baselines. Covered by 286 automated tests and handed off to the UX research team with a written walkthrough.</li>
-        <li>Designed the evaluation harness for an LLM meeting-to-tasks pipeline: ground-truth labeled transcripts, an LLM judge, deepeval metrics, and Phoenix tracing. Measured a 4.4-point run-to-run spread and rejected gains inside it, reached 91% owner-attribution accuracy, and added a verbatim-containment gate that blocks hallucinated items.</li>
-        <li>Delivered a multi-agent Gemini analyzer that detects rage clicks, hesitation, and navigation loops in unedited user-testing recordings, scored against a human observation baseline. Reused a 14-agent video pipeline whose schema and content validators block malformed output instead of shipping it.</li>
-        <li>Created a gold-set benchmark for a web traffic estimator, growing verified ground truth from 28 to 481 domains. Exposed a commercial baseline as off by up to 100× and validated the estimator at 76% within 2× with no systematic bias.</li>
+        <li>Website UX reviews were slow and depended on a single reviewer. I built an evaluator that drives a browser with AI agents and scores a site against 254 criteria, covered by 286 automated tests. Against a human reviewer on the 96 criteria both scored, it agreed within one point 95.8% of the time.</li>
+        <li>A pipeline that turns meetings into tasks can&rsquo;t be trusted without evaluation. I built its harness: labeled ground-truth transcripts, an LLM judge, and tracing. I measured a 4.4-point run-to-run spread and rejected &ldquo;improvements&rdquo; inside it, and added a gate that blocks any task whose quote isn&rsquo;t in the transcript.</li>
+        <li>A 28-domain benchmark couldn&rsquo;t tell a good traffic estimator from a bad one. I grew verified ground truth to 481 domains, which exposed a commercial baseline as off by up to 100× and validated our estimator at 76% within 2×.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Independent Contractor</h3>
@@ -209,14 +213,11 @@
       </div>
       <p class="entry-role">Quantitative Systems Engineer, Trading Systems &amp; Test Infrastructure</p>
       <ul class="bullets">
-        <li>Architected a crypto trading desk across 12 exchange APIs with 2,200+ automated tests (Pytest, pytest-asyncio, Vitest, Testing Library) written test-first across the API and React UI. Every bot ships dry-run by default with kill switches; cut a 528-pair market scanner from 79s to 1.3s.</li>
-        <li>Shipped and live-tested bots on Gate.io spot, perpetual, options, and Simple Earn APIs, validating 867 Gate markets. Found and documented API hazards including APR unit conflicts across 780 coins, minimum-notional rejections on low-priced pairs, and a cancel-order timeout that left stale orders resting.</li>
-        <li>Established an AI-assisted review practice: panels of Claude agents review each change, then an adversarial verifier that defaults to reject re-reads the cited code. Caught 5 critical wrong-number bugs in an options bot before deployment (544 tests) and 22 UI defects in a 5-agent audit.</li>
-        <li>Designed LOBSIM, an exchange simulator for protocol conformance and latency stress testing: a matching engine with IOC, FOK, and post-only orders, a WebSocket L1/L2 feed, injected gateway delay and jitter, and seeded deterministic replay for reproducible regression runs.</li>
-        <li>Wrote an end-to-end test that drives a hedging platform&rsquo;s AI agent interface exactly as Claude Desktop does, through buy, hedge, correction, sale, and payment, and checks the agent&rsquo;s numbers against the platform&rsquo;s own at each step.</li>
+        <li>On a trading desk that talks to 12 exchange APIs, one untested path can lose real money. I wrote tests first across the API and UI, 4,000+ in all, and every bot ships in dry-run with kill switches.</li>
+        <li>Plausible-looking wrong numbers slip through ordinary code review. I set up AI review panels whose findings go to an adversarial verifier that defaults to reject and re-reads the cited code. It caught 5 critical wrong-number bugs in an options bot before deployment.</li>
+        <li>Testing execution logic against a live exchange is risky and can&rsquo;t be repeated. I built LOBSIM, an exchange simulator with injected latency and seeded deterministic replay, so every regression run is reproducible.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">KodeCraft OPC</h3>
@@ -224,12 +225,11 @@
       </div>
       <p class="entry-role">Products &amp; Systems Engineer</p>
       <ul class="bullets">
-        <li>Launched a high-performance crypto derivatives trading dashboard with automated real-time data ingestion, reducing end-to-end execution latency from ~30s to under 10ms.</li>
-        <li>Engineered a robust risk and execution framework using live market feeds and advanced analytics to improve fill rates and minimize slippage.</li>
-        <li>Maintained and optimized market making and liquidity-provisioning infrastructure handling large volumes of real-time cryptocurrency market data.</li>
+        <li>Traders were acting on data up to 30 seconds old. I launched a derivatives trading dashboard with real-time data ingestion that cut end-to-end execution latency to under 10ms.</li>
+        <li>Market and portfolio data was scattered across sources. I built aggregation, visualization, and portfolio tools that put it in one view.</li>
+        <li>Smart contracts hold real funds and can&rsquo;t be patched after launch. I developed and reviewed contracts and dApp integrations to catch problems before deployment.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">ULTiM8 Outsource Solutions Corp.</h3>
@@ -237,12 +237,11 @@
       </div>
       <p class="entry-role">Independent Software Developer</p>
       <ul class="bullets">
-        <li>Served as technology delivery partner on client projects, ensuring production-ready systems within scoped engagements.</li>
-        <li>Executed product-oriented engineering, translating requirements into reliable, scalable solutions.</li>
-        <li>Collaborated with client technical and product leads to align delivery with business goals and timelines.</li>
+        <li>Delivered production-ready systems for client projects within fixed scopes and timelines.</li>
+        <li>Worked with client technical and product leads so each delivery met the business goal, not just the spec.</li>
+        <li>Handled confidential client work under strict confidentiality requirements.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Tereo.AI</h3>
@@ -250,12 +249,11 @@
       </div>
       <p class="entry-role">ETL Specialist</p>
       <ul class="bullets">
-        <li>Partnered with founders to deliver core product and platform initiatives for AI brand protection.</li>
-        <li>Constructed scalable web scraping pipelines powering data ingestion and intelligence workflows.</li>
-        <li>Translated product vision into reliable, production-grade systems enabling rapid iteration.</li>
+        <li>An AI brand protection startup needed a steady supply of web data to spot threats to its customers&rsquo; brands. I built the scraping and ingestion pipelines that feed its detection workflows.</li>
+        <li>Worked directly with the founding team to turn product ideas into production systems they could iterate on quickly.</li>
+        <li>Kept the data flowing as sources and priorities changed, so the platform could adapt without rebuilding its pipelines.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Halcyon Agile</h3>
@@ -263,12 +261,11 @@
       </div>
       <p class="entry-role">Independent Software Developer</p>
       <ul class="bullets">
-        <li>Led the development of an Early Grade Learning (EGL) website, implementing data-driven features that enhanced the platform&rsquo;s accessibility and user engagement.</li>
-        <li>Increased operational productivity by promoting the adoption of modern tech stacks, resulting in faster development cycles and improved application performance.</li>
-        <li>Developed custom boilerplate code for projects, reducing the setup time for new features and allowing the team to quickly deliver solutions to clients.</li>
+        <li>A client needed an Early Grade Learning (EGL) website that young learners could actually use. I led its development from requirements and design through testing.</li>
+        <li>Added data-driven features that improved the site&rsquo;s accessibility and engagement.</li>
+        <li>Starting each new feature took too long, so I wrote shared boilerplate that cut setup time.</li>
       </ul>
     </article>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">SurPath Hub</h3>
@@ -276,9 +273,9 @@
       </div>
       <p class="entry-role">Operations &amp; Project Manager</p>
       <ul class="bullets">
-        <li>Managed open-source projects, driving external contributions and enhancing community visibility, which resulted in a 100% increase in contributor engagement.</li>
-        <li>Created operational tools that improved workflow efficiency and reduced process completion time by over 30%.</li>
-        <li>Implemented agile project management practices, accelerating deliverables and increasing client satisfaction through faster iteration and product releases.</li>
+        <li>Routine processes were eating staff time. I built internal tools that cut completion time by over 30%.</li>
+        <li>Our open-source projects had few outside contributors. I managed them and doubled contributor engagement.</li>
+        <li>Client releases were slow. I introduced agile practices that shortened iteration cycles.</li>
       </ul>
     </article>
   </section>
@@ -292,7 +289,7 @@
         <h3 class="entry-org">Manuel S. Enverga University Foundation</h3>
         <span class="entry-dates">Jul 2019 – May 2023</span>
       </div>
-      <p class="entry-role">Bachelor&rsquo;s of Science, Information Technology</p>
+      <p class="entry-role">Bachelor of Science, Information Technology</p>
     </article>
   </section>
 
