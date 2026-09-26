@@ -162,6 +162,16 @@
       box-shadow: none;
     }
   }
+
+  /* ---------- Summary ---------- */
+  .summary { margin: 12px 0 0; line-height: 1.45; }
+
+  /* ---------- Compact rows (earlier experience) ---------- */
+  .rows { margin: 0; padding: 0; list-style: none; line-height: 1.35; }
+  .rows li { margin-bottom: 5px; break-inside: avoid; }
+  .rows li:last-child { margin-bottom: 0; }
+  .row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .row-head strong { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -170,40 +180,38 @@
   <!-- ======================= HEADER ======================= -->
   <header class="header">
     <h1 class="name">Hju Kneyck Flores</h1>
-    <p class="tagline">Quantitative Developer — Trading Systems, Execution &amp; Market Microstructure</p>
+    <p class="tagline">Quantitative Developer — Market Making, Execution &amp; Multi-Venue Risk</p>
     <ul class="contact">
       <li>Philippines (UTC+8)</li>
       <li><a href="mailto:hjucode@gmail.com">hjucode@gmail.com</a></li>
       <li><a href="https://github.com/huenique">github.com/huenique</a></li>
     </ul>
+    <p class="summary">Quant engineer with six years of building trading systems end to end, from research and backtesting to execution and risk in live markets. Most of my best work has come from closing the gap between what a model predicts and what the market actually fills.</p>
   </header>
 
-  <!-- ======================= SKILLS ======================= -->
   <section class="section">
-    <h2 class="section-title">Technical Skills</h2>
-    <dl class="skill-grid">
-      <dt>Languages</dt><dd>Python, Rust, TypeScript, SQL</dd>
-      <dt>Methods</dt><dd>Backtesting, Monte Carlo simulation, GARCH volatility models, options pricing, P&amp;L attribution</dd>
-      <dt>Libraries &amp; frameworks</dt><dd>CCXT, hftbacktest, FastAPI, Litestar, React</dd>
-      <dt>Databases</dt><dd>PostgreSQL</dd>
-      <dt>AI tools</dt><dd>Claude Code, Anthropic API, Gemini API, MCP</dd>
-    </dl>
+    <h2 class="section-title">Selected Results</h2>
+    <ul class="bullets">
+      <li><strong>A win rate that lost money.</strong> A Polymarket fleet won 96.6% of 119 trades and still had negative expected value, because one loss cost as much as 57 wins and break-even needed 98.2%.</li>
+      <li><strong>An edge that vanished with size.</strong> A maker-taker strategy tested positive at $1 per leg because earlier tests assumed any crossed level filled in full. I built a fill model that walks the trade tape&rsquo;s real sizes, and the edge turned negative between $1 and $10 per leg.</li>
+      <li><strong>An unwind that never filled.</strong> IOC exit orders priced at the last-seen bid missed every time in a falling market while buys at the ask kept filling. I moved exits to price through the book and logged every zero-fill, since the venue keeps no record of them.</li>
+      <li><strong>A kill switch that could not fire.</strong> The grid computed P&amp;L in contracts, so on a 1,000-unit contract a $5 loss read as 0.005 and the switch, set in quote currency, never triggered. P&amp;L is now in quote currency everywhere, including the kill switch.</li>
+      <li><strong>A scan too slow to act on.</strong> Opportunities disappeared before the scanner finished a pass. Replacing per-symbol requests with three bulk calls cut a scan of 528 markets from 79 seconds to 1.3.</li>
+    </ul>
   </section>
 
-  <!-- ======================= EXPERIENCE ======================= -->
   <section class="section">
     <h2 class="section-title">Experience</h2>
-
     <article class="entry">
       <div class="entry-head">
         <h3 class="entry-org">Independent Contractor</h3>
         <span class="entry-dates">Sep 2020 – Present</span>
       </div>
-      <p class="entry-role">Quantitative Systems Engineer</p>
+      <p class="entry-role">Quantitative Developer, Market Making &amp; Execution</p>
       <ul class="bullets">
-        <li>Funding rates differ across perpetual exchanges, but the gap only pays if both legs fill together and the position stays hedged. I built and run a delta-neutral arbitrage desk, live on 9 venues, that enters both legs at once, sizes each trade to the depth on the book, and refuses trades that fail slippage checks. 4,000+ automated tests protect it.</li>
-        <li>A daily BTC options wheel looked like steady yield. I tested it with a 20,000-path GARCH-t Monte Carlo and a 2021–2026 backtest. It had no edge beyond the volatility risk premium, and a 5-vol-point tenor error flipped the hedged version negative, so the capital deployment stopped.</li>
-        <li>A Polymarket strategy won 96.6% of 119 trades and still lost money, because one loss cost as much as 57 wins. A depth-aware fill model I built from the trade tape then showed a second strategy&rsquo;s edge turned negative between $1 and $10 per leg, stopping it before scale.</li>
+        <li>Funding and price gaps across exchanges only pay if both legs fill together and inventory stays hedged. I built and run a delta-neutral desk, live on 9 perpetual venues, with atomic two-leg entry, sizing from live book depth, and exits in slices capped at 25% of depth on both books so the position stays hedged as it shrinks. Roughly 4,000 automated tests cover the desk.</li>
+        <li>A grid market maker is supposed to sit underwater while price climbs its ladder, so a naive kill switch flattens it for doing its job. I built one for spot and perps with post-only ladders and an inventory cap, and sized its kill-switch threshold from 99.5th-percentile one-minute moves, floored at the loss the grid carries in normal operation.</li>
+        <li>To know whether the strategy or the hedge made money, I split carry P&amp;L into lending interest, funding, and hedge drift. On the options side, I built a delta hedger that refuses stale data, cools down between hedges, and allocates hedge costs pro rata across the positions it protects.</li>
       </ul>
     </article>
     <article class="entry">
@@ -214,70 +222,44 @@
       <p class="entry-role">Products &amp; Systems Engineer</p>
       <ul class="bullets">
         <li>Traders were acting on data up to 30 seconds old. I launched a derivatives trading dashboard with real-time data ingestion that cut end-to-end execution latency to under 10ms.</li>
-        <li>Market and portfolio data was scattered across sources. I built aggregation, visualization, and portfolio tools that put it in one view.</li>
+        <li>Maintained market-making and liquidity-provisioning infrastructure processing high volumes of real-time crypto market data.</li>
         <li>Smart contracts hold real funds and can&rsquo;t be patched after launch. I developed and reviewed contracts and dApp integrations to catch problems before deployment.</li>
       </ul>
     </article>
-    <article class="entry">
-      <div class="entry-head">
-        <h3 class="entry-org">Independent Contractor</h3>
-        <span class="entry-dates">Jan 2025 – Present</span>
-      </div>
-      <p class="entry-role">AI Systems Engineer</p>
-      <ul class="bullets">
-        <li>Estimating a website&rsquo;s traffic normally means paying for licensed panel data. I built an estimator that combines a trained model with AI research agents. It costs $0.93 per site and ties SimilarWeb on US commercial sites, and I documented where it falls short, on non-US sites, so the team knows when to trust it.</li>
-        <li>Client teams heard about new competitor TV commercials too late to respond. I built a service that catches each new spot within 10 minutes, writes a teardown of it, and sends it to the right client team. Its data later fed three industry reports covering 11,000+ commercials.</li>
-        <li>Analysts needed structured data from raw video, and a self-hosted model looked cheaper. I built a 14-agent video analysis pipeline and benchmarked both options: the hosted model came out 3–5× cheaper, 2× faster, and reliable on 10 of 10 runs, so the choice was made on data.</li>
-      </ul>
-    </article>
-    <article class="entry">
-      <div class="entry-head">
-        <h3 class="entry-org">ULTiM8 Outsource Solutions Corp.</h3>
-        <span class="entry-dates">Mar 2025 – Dec 2025</span>
-      </div>
-      <p class="entry-role">Independent Software Developer</p>
-      <ul class="bullets">
-        <li>A machining company with hundreds of clients took quote requests by email and phone, and some slipped through. I built a CRM that tracks every quote from request to order and keeps each client&rsquo;s past jobs, specs, and pricing in one place, so repeat orders no longer meant digging through spreadsheets.</li>
-        <li>Staff lost time answering &ldquo;where are my parts?&rdquo; calls, and nobody could see which clients had gone quiet. I added job tracking so the team could answer status questions right away, and follow-up flags for clients who hadn&rsquo;t ordered in a while.</li>
-        <li>Writing quotes and documents by hand was slow. I brought AI into the CRM to draft them from the client and job data already stored there, so the team reviews and sends instead of starting from a blank page.</li>
-      </ul>
-    </article>
-    <article class="entry">
-      <div class="entry-head">
-        <h3 class="entry-org">Tereo.AI</h3>
-        <span class="entry-dates">Mar 2025 – Dec 2025</span>
-      </div>
-      <p class="entry-role">ETL Specialist</p>
-      <ul class="bullets">
-        <li>Brands were losing sales to counterfeit and infringing listings spread across online marketplaces, and finding them by hand couldn&rsquo;t keep up. I built scrapers for marketplaces like AliExpress and Tokopedia that pull listings and store data into the platform, so its detection could flag threats automatically.</li>
-        <li>Marketplaces change their pages and block scrapers often, which kept breaking data collection. I added rotating proxies, retries, and alerts when a source broke, plus AI agents that rewrite a scraper when a site changes, so the data kept flowing without constant manual fixes.</li>
-        <li>Worked directly with the founding team to decide which sources and data mattered most for enforcement, then turned those product ideas into production pipelines they could build on quickly.</li>
-      </ul>
-    </article>
-    <article class="entry">
-      <div class="entry-head">
-        <h3 class="entry-org">Halcyon Agile</h3>
-        <span class="entry-dates">Jan 2023 – Apr 2023</span>
-      </div>
-      <p class="entry-role">Independent Software Developer</p>
-      <ul class="bullets">
-        <li>A client needed an Early Grade Learning (EGL) website that young learners could actually use. I led its development from requirements and design through testing.</li>
-        <li>Added data-driven features that improved the site&rsquo;s accessibility and engagement.</li>
-        <li>Starting each new feature took too long, so I wrote shared boilerplate that cut setup time.</li>
-      </ul>
-    </article>
-    <article class="entry">
-      <div class="entry-head">
-        <h3 class="entry-org">SurPath Hub</h3>
-        <span class="entry-dates">Jun 2021 – Jan 2023</span>
-      </div>
-      <p class="entry-role">Operations &amp; Project Manager</p>
-      <ul class="bullets">
-        <li>Routine processes were eating staff time. I built internal tools that cut completion time by over 30%.</li>
-        <li>Our open-source projects had few outside contributors. I managed them and doubled contributor engagement.</li>
-        <li>Client releases were slow. I introduced agile practices that shortened iteration cycles.</li>
-      </ul>
-    </article>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Open Source &amp; Writing</h2>
+    <ul class="rows">
+      <li><div class="row-head"><span><strong>barter-data-rs</strong>, Rust</span><span class="entry-dates">2024</span></div>Extended Barter&rsquo;s market-data library with PowerTrade, Coincall, Derive, and dYdX order books and option chains, plus Deribit, Aevo, and OKX streams.</li>
+      <li><div class="row-head"><span><strong>LOBSIM</strong>, Python</span><span class="entry-dates">2026</span></div>Limit order book simulator with a price-time matching engine, IOC, FOK, and post-only orders, a WebSocket L1/L2 feed, and injected latency and jitter.</li>
+      <li><div class="row-head"><span><strong>strato-trade</strong>, Rust</span><span class="entry-dates">2024</span></div>Order book imbalance models with an hftbacktest harness, plus grid, delta-scalping, and options-arbitrage models.</li>
+      <li><div class="row-head"><span><strong>Field notes</strong>, Write-up</span><span class="entry-dates">2026</span></div>What broke in production on my desk and the results that went against me, at github.com/huenique/huenique.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Other Experience</h2>
+    <ul class="rows">
+      <li><div class="row-head"><span><strong>Independent Contractor</strong>, Solutions Architect &amp; AI Systems Engineer</span><span class="entry-dates">Jan 2025 – Present</span></div>Production AI systems for clients, including a competitor-ad alert service and evaluation tooling.</li>
+      <li><div class="row-head"><span><strong>Tereo.AI</strong>, ETL Specialist</span><span class="entry-dates">Mar 2025 – Dec 2025</span></div>Marketplace scraping pipelines for brand protection, with AI agents that repair scrapers when sites change.</li>
+      <li><div class="row-head"><span><strong>ULTiM8 Outsource Solutions Corp.</strong>, Independent Software Developer</span><span class="entry-dates">Mar 2025 – Dec 2025</span></div>A CRM for a machining company with hundreds of clients, with AI-drafted quotes.</li>
+      <li><div class="row-head"><span><strong>Halcyon Agile</strong>, Independent Software Developer</span><span class="entry-dates">Jan 2023 – Apr 2023</span></div>Led development of an early-grade learning platform.</li>
+      <li><div class="row-head"><span><strong>SurPath Hub</strong>, Operations &amp; Project Manager</span><span class="entry-dates">Jun 2021 – Jan 2023</span></div>Built internal tools that cut process time by over 30%.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Technical Skills</h2>
+    <dl class="skill-grid">
+      <dt>Languages</dt><dd>Python, Rust, TypeScript, SQL, Solidity</dd>
+      <dt>Rust libraries</dt><dd>Tokio, hftbacktest, Barter, serde, reqwest</dd>
+      <dt>Python libraries</dt><dd>asyncio, CCXT, NumPy, pandas, SciPy, statsmodels</dd>
+      <dt>Methods</dt><dd>Backtesting, Monte Carlo simulation, GARCH volatility models, options pricing and Greeks, P&amp;L attribution</dd>
+      <dt>Exchange protocols</dt><dd>REST, WebSocket</dd>
+      <dt>On-chain</dt><dd>EVM, Polygon, Polymarket CLOB</dd>
+      <dt>Infrastructure</dt><dd>PostgreSQL, Docker, GitHub Actions</dd>
+    </dl>
   </section>
 
   <!-- ======================= EDUCATION ======================= -->
